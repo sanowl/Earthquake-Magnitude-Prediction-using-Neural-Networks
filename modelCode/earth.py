@@ -11,7 +11,7 @@ from sklearn.model_selection import GridSearchCV
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 # Load earthquake data from CSV file
-data = pd.read_csv('database.csv')
+data = pd.read_csv('dataset/database.csv')
 
 # Extract features and labels
 X = data[['Latitude', 'Longitude', 'Depth']].values.astype(np.float32)

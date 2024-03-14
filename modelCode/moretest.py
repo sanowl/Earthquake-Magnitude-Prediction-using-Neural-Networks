@@ -8,15 +8,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
 
 # Load earthquake data from CSV file
-data = pd.read_csv('sampledata.csv')
+data = pd.read_csv('dataset/sampledata.csv')
 
 
-# Update column names to match the extraction code
-data.columns = ['Date', 'Time', 'Latitude', 'Longitude', 'Type', 'Depth', 'Depth Error', 
-                'Depth Seismic Stations', 'Magnitude', 'Magnitude Type', 'Magnitude Error', 
-                'Magnitude Seismic Stations', 'Azimuthal Gap', 'Horizontal Distance', 
-                'Horizontal Error', 'Root Mean Square', 'ID', 'Source', 'Location Source', 
-                'Magnitude Source', 'Status']
 
 # Extract features and labels
 X = data[['Latitude', 'Longitude', 'Depth']].values.astype(np.float32)
@@ -39,16 +33,30 @@ y_test_tensor = torch.tensor(y_test).view(-1, 1)
 class NeuralNet(nn.Module):
     def __init__(self, input_size):
         super(NeuralNet, self).__init__()
-        self.fc1 = nn.Linear(input_size, 128)
-        self.fc2 = nn.Linear(128, 256)
-        self.fc3 = nn.Linear(256, 128)
-        self.fc4 = nn.Linear(128, 1)
+        self.fc1 = nn.Linear(input_size, 256)
+        self.fc2 = nn.Linear(256, 512)
+        self.fc3 = nn.Linear(512, 256)
+        self.fc4 = nn.Linear(256, 128)
+        self.fc5 = nn.Linear(128, 64)
+        self.fc6 = nn.Linear(64, 1)
+        self.dropout = nn.Dropout(0.2)
+        self.batch_norm1 = nn.BatchNorm1d(256)
+        self.batch_norm2 = nn.BatchNorm1d(512)
+        self.batch_norm3 = nn.BatchNorm1d(256)
+        self.batch_norm4 = nn.BatchNorm1d(128)
+        self.batch_norm5 = nn.BatchNorm1d(64)
 
     def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
-        x = torch.relu(self.fc3(x))
-        x = self.fc4(x)
+        x = self.batch_norm1(torch.relu(self.fc1(x)))
+        x = self.dropout(x)
+        x = self.batch_norm2(torch.relu(self.fc2(x)))
+        x = self.dropout(x)
+        x = self.batch_norm3(torch.relu(self.fc3(x)))
+        x = self.dropout(x)
+        x = self.batch_norm4(torch.relu(self.fc4(x)))
+        x = self.dropout(x)
+        x = self.batch_norm5(torch.relu(self.fc5(x)))
+        x = self.fc6(x)
         return x
 
 # Initialize the model
@@ -60,7 +68,7 @@ model.to(device)
 
 # Define loss function and optimizer
 criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters())
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Train the model
 num_epochs = 50
