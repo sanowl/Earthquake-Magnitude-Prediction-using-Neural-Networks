@@ -1,0 +1,33 @@
+Title: Earthquake Magnitude Prediction using Neural Networks
+
+Introduction:
+This document outlines the process of training a neural network model to predict earthquake magnitudes based on geographical features such as latitude, longitude, and depth. The model is trained using earthquake data collected from various sources.
+
+Data Preprocessing:
+
+The earthquake data is loaded from a CSV file, containing features like latitude, longitude, and depth, along with corresponding earthquake magnitudes.
+The features are standardized using a StandardScaler to ensure uniformity and improve model performance.
+The dataset is split into training and testing sets using a 80-20 split ratio.
+Neural Network Architecture:
+
+The neural network architecture consists of six fully connected layers (nn.Linear) with batch normalization (nn.BatchNorm1d) and dropout (nn.Dropout) layers to improve generalization and prevent overfitting.
+The model architecture is as follows:
+Input Layer (Size: 3)
+Hidden Layer 1 (Size: 256) with Batch Normalization and Dropout
+Hidden Layer 2 (Size: 512) with Batch Normalization and Dropout
+Hidden Layer 3 (Size: 256) with Batch Normalization and Dropout
+Hidden Layer 4 (Size: 128) with Batch Normalization and Dropout
+Hidden Layer 5 (Size: 64) with Batch Normalization and Dropout
+Output Layer (Size: 1)
+Training and Evaluation:
+
+The model is trained using the training dataset with Mean Squared Error (MSE) loss and Adam optimizer.
+Learning rate scheduling is implemented using ReduceLROnPlateau to adjust the learning rate dynamically based on validation loss.
+The model is evaluated using the testing dataset, and metrics such as MSE, Mean Absolute Error (MAE), and Root Mean Squared Error (RMSE) are calculated to assess its performance.
+Results:
+
+The model's performance on the test set is as follows:
+Final Test Loss: 0.18295184330835368
+Mean Squared Error: 0.18295184
+Mean Absolute Error: 0.31537884
+Root Mean Squared Error: 0.42772868
